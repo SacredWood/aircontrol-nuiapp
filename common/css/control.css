@@ -1,0 +1,182 @@
+body {
+  background-color: #f0f8fa;
+  text-align: center;
+}
+
+.header {
+  height: 44px;
+  font-size: 16px;
+  background-color: #1abc9c;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header img {
+  position: absolute;
+  right: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.content .msg-window {
+  height: 320px;
+  background-color: #000;
+  color: #fff;
+  margin-top: 10px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.content .speed {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.content .unit-km::after {
+  content: 'KM/h';
+}
+
+.content .arrow img {
+  width: 70px;
+  height: 60px;
+  position: relative;
+}
+
+.content .arrow img#btnStop:active {
+  top: 2px;
+}
+
+.content .arrow img#btnTop:active {
+  top: 2px;
+}
+
+.content .arrow img#btnLeft:active {
+  left: 2px;
+}
+
+.content .arrow img#btnRight:active {
+  right: 2px;
+}
+
+.content .arrow img#btnBottom:active {
+  bottom: 2px;
+}
+
+.content .arrow .center {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 60px;
+}
+
+.content .center img {
+  width: 60px;
+  height: 70px;
+}
+
+.content .stop img {
+  height: 100%;
+  width: 60px;
+}
+
+.content .btn-set {
+  display: flex;
+  justify-content: center;
+  margin: 10px auto;
+  align-items: center;
+}
+
+.content .btn {
+  padding: 5px;
+  border: 0;
+  border-radius: 5px;
+  width: 60px;
+  height: 40px;
+  margin: 0 10px;
+}
+
+.content .btn-set .btn-l {
+  color: #fff;
+  background-color: #4caf50;
+}
+
+.content .btn-set .btn-m {
+  color: #fff;
+  background-color: #169bd5;
+}
+
+.content .btn-set .btn-h {
+  color: #fff;
+  background-color: #db344d;
+}
+.content .btn-set .connect {
+  color: #fff;
+  background-color: #4caf50;
+	padding: 5px;
+	border: 0;
+	border-radius: 5px;
+	width: 80px;
+	height: 40px;
+	margin: 0 10px;
+}
+.content .btn-set .ring {
+  height: 30px;
+  width: 30px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.content .ring .ring-l {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.content .ring .ring-m {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.content .ring .ring-h {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+.content .ring .ring-status {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+.content .ring .ring-brake {
+	width: 20px;
+	height: 20px;
+	background-color: #DB344D;
+	border-radius: 50%;
+}
+
+.content .ring .active {
+  background-color: #8bc34a;
+}

@@ -1,0 +1,53 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": {
+			"navigationBarTitleText": "连接参数",
+			"navigationStyle": "custom",
+			"backgroundColor": "#f0f8fa"
+		}
+	}, {
+		"path": "pages/aircontrol/aircontrol",
+		"style": {
+			"navigationBarTitleText": "空调遥控",
+			"backgroundColor": "#f0f8fa",
+			"app-plus": {
+				"titleNView": {
+					"buttons": [{
+						"text": "\ue635",
+						"fontSrc": "/static/iconfont.ttf",
+						"fontSize": "22px"
+					}]
+				}
+			}
+		}
+	}, {
+		"path": "pages/keylist/keylist",
+		"style": {
+			"navigationBarTitleText": "密钥列表",
+			// "navigationStyle": "custom",
+			"backgroundColor": "#f0f8fa",
+			"app-plus": {
+				"titleNView": {
+					"buttons": [{
+						"text": "\ue603",
+						"fontSrc": "/static/iconfont.ttf",
+						"fontSize": "22px"
+					}]
+				}
+			}
+		}
+	}, {
+		"path": "pages/airlist/airlist",
+		"style": {
+			"navigationBarTitleText": "空调列表",
+			"backgroundColor": "#f0f8fa"
+		}
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "空调遥控器",
+		"navigationBarBackgroundColor": "#00bcd4",
+		"backgroundColor": "#f0f8fa"
+	}
+}

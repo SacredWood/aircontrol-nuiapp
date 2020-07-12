@@ -1,0 +1,43 @@
+page {
+	background-color: #f0f8fa;
+	text-align: center;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.container .device-title{
+	display: flex;
+	flex: 6;
+}
+.container .btn-set {
+	flex: 4;
+	display: flex;
+	justify-content: space-between;
+	margin-left: 10px;
+}
+
+.btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10rpx;
+	margin: 10rpx;
+	border: 0;
+	border-radius: 5px;
+	width: 300rpx;
+	height: 160rpx;
+	line-height: normal;
+	font-size: 14px;
+}
+
+.save {
+	color: #fff;
+	background-color: #009688;
+}
+.del{
+	color: #fff;
+	background-color: #ef5350;
+}

@@ -1,0 +1,73 @@
+page {
+	background-color: #f0f8fa;
+	text-align: center;
+}
+
+.header {
+	height: 44px;
+	color: #fff;
+	background-color: #00bcd4;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.content li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	margin-top: 10px;
+	border-radius: 3px;
+	border: 0;
+	font-size: 16px;
+	background-color: #fff;
+}
+
+.content .device-title {
+	/* display: flex; */
+	/* flex: 6; */
+	overflow: hidden;
+}
+
+.content .btn-set {
+	display: flex;
+	/* flex:4; */
+	justify-content: space-between;
+	margin-left: 10px;
+	width: 260rpx;
+}
+
+.content .btn-set .btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10rpx;
+	margin: 0;
+	border: 0;
+	border-radius: 5px;
+	width: 120rpx;
+	height: 80rpx;
+	line-height: normal;
+	font-size: 14px;
+}
+
+.content .btn-set .save {
+	color: #fff;
+	background-color: #009688;
+}
+
+.content .btn-set .del {
+	color: #fff;
+	background-color: #ef5350;
+}
+
+.tips {
+	font-size: 12px;
+	color: #607d8b;
+	padding: 10px;
+}
