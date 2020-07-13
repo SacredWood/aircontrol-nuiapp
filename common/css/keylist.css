@@ -54,6 +54,7 @@ page {
 	height: 80rpx;
 	line-height: normal;
 	font-size: 14px;
+	background: none;
 }
 
 .content .btn-set .save {

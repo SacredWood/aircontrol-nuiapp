@@ -1,9 +1,18 @@
 <template>
 	<view class="container">
 		<view class="content">
-			<ul id="device-list" v-for="(item, index) in deviceList" :key="index">
+			<ul id="device-default">
 				<li>
-					<view class="device-title">{{ `${item.ProductKey}&${item.Topic}` }}</view>
+					<view class="device-title">{{ `${deviceDefault.deviceName}@${deviceDefault.topic}` }}</view>
+					<view class="btn-set">
+						<button class="btn"></button>
+						<button class="btn save">默认</button>
+					</view>
+				</li>
+			</ul>
+			<ul id="device-list">
+				<li  v-for="(item, index) in deviceList" :key="index">
+					<view class="device-title">{{ `${item.deviceName}@${item.topic}` }}</view>
 					<view class="btn-set">
 						<button class="btn del" @click="del(index)">删除</button>
 						<button class="btn save" @click="use(index)">使用</button>
@@ -16,36 +25,38 @@
 </template>
 
 <script>
+import Utils from '../../common/js/utils.js';
 export default {
 	data() {
 		return {
-			deviceList: []
+			deviceList: [],
+			deviceDefault: {}
 		};
 	},
 	onShow() {
 		this.createList();
 	},
 	onNavigationBarButtonTap() {
-		let that = this
+		let that = this;
 		// 允许从相机和相册扫码
 		uni.scanCode({
 			success: function(res) {
 				console.log('条码类型：' + res.scanType);
 				console.log('条码内容：' + res.result);
-				if(res.result){
-					try{
+				if (res.result) {
+					try {
 						that.deviceList.push(JSON.parse(res.result));
-						that.deviceList = that.unique(that.deviceList)
+						that.deviceList = Utils.unique(this.deviceList, 'deviceName','topic')
 						uni.setStorageSync('$DeviceList', JSON.stringify(that.deviceList));
 						uni.showToast({
 							title: '添加成功'
-						})
-					}catch(e){
-						console.log(e)
+						});
+					} catch (e) {
+						console.log(e);
 						uni.showToast({
 							title: '无法识别',
 							icon: 'none'
-						})
+						});
 					}
 				}
 			}
@@ -53,11 +64,19 @@ export default {
 	},
 	methods: {
 		createList: function() {
-			let that = this;
-			let arr = uni.getStorageSync('$DeviceList');
-			if (arr) {
-				that.deviceList = JSON.parse(arr);
+			try{
+				this.deviceDefault = uni.getStorageSync('$defaultApp') || '{}'
+				this.deviceDefault = JSON.parse(this.deviceDefault)
+				this.deviceList = uni.getStorageSync('$DeviceList') || '[]'
+				this.deviceList = JSON.parse(this.deviceList)
+			}catch(e){
+				console.log(e)
+				uni.showToast({
+					title: '未初始化成功',
+					icon:'none'
+				})
 			}
+			
 		},
 		del: function(index) {
 			this.deviceList.splice(index, 1);
@@ -70,41 +89,9 @@ export default {
 		},
 		use: function(index) {
 			let obj = this.deviceList[index];
-			uni.setStorageSync('$ProductKey', obj.ProductKey);
-			uni.setStorageSync('$DeviceName', obj.DeviceName);
-			uni.setStorageSync('$DeviceSecret', obj.DeviceSecret);
-			uni.setStorageSync('$Topic', obj.Topic);
-			uni.navigateTo({
-				url: '../aircontrol/aircontrol'
-			});
+			uni.setStorageSync('$defaultApp', JSON.stringify(obj));
+			Utils.goTo('aircontrol')
 		},
-		unique(arr) {
-			//除去空值 重值
-			let list = []
-			let hashMap = {}
-			arr.forEach(obj => {
-				// console.log(!obj,obj)
-				if (obj && typeof obj == 'object') {
-					let key = `${obj.ProductKey}${obj.Topic}`
-					hashMap[key] = obj
-				}
-			});
-			// console.log(hashMap)
-			for(let val of Object.values(hashMap)){
-				list.push(val)
-			}
-			return list
-		},
-		index: function() {
-			uni.navigateTo({
-				url: 'index.html'
-			});
-		},
-		airlist: function() {
-			uni.navigateTo({
-				url: '../airlist/airlist'
-			});
-		}
 	},
 	onHide() {
 		this.deviceList = [];

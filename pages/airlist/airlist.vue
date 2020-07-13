@@ -1,43 +1,87 @@
 <template>
 	<view class="container">
-		<ul id="device-list" v-for="(item, index) in airlist" :key="index">
-			<li>
-				<view class="device-title">{{ item.key }}</view>
-				<view class="btn-set">
-					<button class="btn del" @click="del(item.key)">删除</button>
-					<button class="btn save" @click="use(item.key)">使用</button>
+		<view class="content">
+			<checkbox-group class="ul" @change="checkboxChange">
+				<view class="li" v-for="(item, index) in airlist" :key="index">
+					<label class="label" :for="'cb' + index">
+						<checkbox :id="'cb' + index" :value="item.name" :checked="item.checked" />
+						<view class="device-title">{{ item.name }}</view>
+					</label>
+					<view class="btn-set">
+						<!-- <button class="btn del" @click="del(item.key)">删除</button> -->
+						<button class="btn save" @click="use(item.deviceName)">使用</button>
+					</view>
 				</view>
-			</li>
-		</ul>
-		<view class="btn-set">
+			</checkbox-group>
+
+			<!-- 	<ul id="device-list" v-for="(item, index) in airlist" :key="index">
+				<li>
+					<checkbox name="deviceSet" value="${arr[index].DeviceName}" id="dev${index}" />
+					<view class="checkbox">
+						<label for="dev${index}">
+							<view class="device-title">{{ item.deviceName }}</view>
+						</label>
+					</view>
+					<view class="btn-set">
+						<button class="btn"></button>
+						<button class="btn del" @click="del(item.key)">删除</button>
+						<button class="btn save" @click="use(item.deviceName)">使用</button>
+					</view>
+				</li>
+			</ul> -->
+			<!-- <view class="btn-set">
 			<button class="btn save" @click="photoScanCode">允许从相机和相册扫码</button>
 			<button class="btn save" @click="inItMqtt">初始化mqtt</button>
+		</view> -->
 		</view>
 	</view>
 </template>
 
 <script>
 import * as crypto from 'crypto';
-// import * as mqtt from 'mqtt';
-// import mqtt from '../../common/js/mqtt.min.js';
 import * as mqtt from 'alibabacloud-iot-device-sdk';
-
+import Utils from '../../common/js/utils.js';
 export default {
 	data() {
 		return {
 			airlist: [],
-			airObjList: {}
+			checkedList: []
 		};
+	},
+	onNavigationBarButtonTap() {
+		let that = this;
+		console.log('点击了自定义按钮');
+		uni.setStorageSync('$checkedDeviceList', JSON.stringify(that.checkedList))
+		Utils.goTo('aircontrol')
+	},
+	onLoad() {
+		this.createList();
 	},
 	methods: {
 		createList: function() {
 			let that = this;
-			let obj = JSON.parse(uni.getStorageSync('$airlist')) || {};
-			for (let key in obj) {
-				that.airlist.push({
-					key: key
+			let arr = uni.getStorageSync('$DeviceList') || '[]';
+			arr = JSON.parse(arr);
+			arr = this.checkBox(arr);
+			arr = Utils.unique(arr, 'deviceName')
+			console.log(arr)
+			this.airlist = arr
+		},
+		checkBox: function(arr) {
+			if (arr) {
+				let list = [];
+				arr.forEach(obj => {
+					let item = {};
+					item.name = obj.deviceName;
+					item.checked = false;
+					list.push(item);
 				});
+				return list;
 			}
+		},
+		checkboxChange: function(e) {
+			this.checkedList = e.detail.value
+			console.log(e.detail.value)
 		},
 		photoScanCode() {
 			// 允许从相机和相册扫码
@@ -49,6 +93,15 @@ export default {
 				}
 			});
 		},
+		use: function(val) {
+			if (val) {
+				this.checkArr.push(val);
+				uni.setStorageSync('$UseDeviceList', JSON.stringify(this.checkArr));
+			}
+			Utils.goTo('aircontrol');
+		},
+
+		//测试代码
 		inItMqtt() {
 			let that = this;
 			console.log(11);

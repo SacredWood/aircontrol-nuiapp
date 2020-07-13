@@ -2,42 +2,79 @@ page {
 	background-color: #f0f8fa;
 	text-align: center;
 }
-.container {
+
+.header {
+	height: 44px;
+	color: #fff;
+	background-color: #00bcd4;
+}
+
+.content {
 	display: flex;
 	flex-direction: column;
 	padding-left: 10px;
 	padding-right: 10px;
 }
-.container .device-title{
-	display: flex;
-	flex: 6;
-}
-.container .btn-set {
-	flex: 4;
+
+.content .li {
 	display: flex;
 	justify-content: space-between;
-	margin-left: 10px;
+	align-items: center;
+	padding: 10px;
+	margin-top: 10px;
+	border-radius: 3px;
+	border: 0;
+	font-size: 16px;
+	background-color: #fff;
 }
 
-.btn {
+.content .label {
+	display: flex;
+	flex: 8;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 5px;
+}
+
+.content .device-title {
+	overflow: hidden;
+}
+
+.content .btn-set {
+	display: flex;
+	flex:4;
+	justify-content: flex-end;
+	margin-left: 10px;
+	width: 260rpx;
+}
+
+.content .btn-set .btn {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding: 10rpx;
-	margin: 10rpx;
+	margin: 0;
 	border: 0;
 	border-radius: 5px;
-	width: 300rpx;
-	height: 160rpx;
+	width: 120rpx;
+	height: 80rpx;
 	line-height: normal;
 	font-size: 14px;
+	background: none;
 }
 
-.save {
+.content .btn-set .save {
 	color: #fff;
 	background-color: #009688;
 }
-.del{
+
+.content .btn-set .del {
 	color: #fff;
 	background-color: #ef5350;
+}
+
+.tips {
+	font-size: 12px;
+	color: #607d8b;
+	padding: 10px;
 }

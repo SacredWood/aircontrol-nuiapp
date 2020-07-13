@@ -73,14 +73,15 @@
 
 <script>
 import * as iot from 'alibabacloud-iot-device-sdk';
-
+import Utils from '../../common/js/utils.js';
 export default {
 	data() {
 		return {
 			// echarts,
 			// onInit: initChart,
 			myChart: {},
-			sdk_device: null,
+			defaultApp: {},
+			useDeviceList: [],
 			topic: '',
 			device: null,
 			timeOutEvent: null,
@@ -101,7 +102,7 @@ export default {
 			isModelCold: false,
 			isModelHot: false,
 			isSwitchBtn: false,
-			option : {
+			option: {
 				backgroundColor: '#182035',
 				tooltip: {
 					show: true,
@@ -153,21 +154,17 @@ export default {
 	onLoad: function() {
 		let that = this;
 		uni.setStorageSync('$isSwitchBtn', false);
-		if (uni.getStorageSync('$ProductKey')) {
-			
-			this.sdk_device = {
-				productKey: uni.getStorageSync('$ProductKey'),
-				deviceName: uni.getStorageSync('$DeviceName'),
-				deviceSecret: uni.getStorageSync('$DeviceSecret'),
-				tls: true,
-			};
-		} else {
+		let app = uni.getStorageSync('$defaultApp') || '{}';
+		if (app == '{}') {
 			uni.showToast({
 				title: '缺少必要参数',
 				icon: 'none'
 			});
 		}
-		this.topic = `/${this.sdk_device.productKey}/${this.sdk_device.deviceName}/user/${uni.getStorageSync('$Topic')}`;
+		this.defaultApp = JSON.parse(app);
+		let checkedList = uni.getStorageSync('$checkedDeviceList') || '[]';
+		this.useDeviceList = JSON.parse(checkedList);
+		this.topic = `/${this.defaultApp.productKey}/${this.defaultApp.deviceName}/user/${this.defaultApp.topic}`;
 		that.connect();
 		if (this.isSwitchBtn) {
 			this.readNum();
@@ -176,7 +173,7 @@ export default {
 	onNavigationBarButtonTap() {
 		let that = this;
 		console.log('点击了自定义按钮');
-		that.airlist();
+		Utils.goTo('airlist');
 	},
 	methods: {
 		// initChart(e) {
@@ -193,8 +190,11 @@ export default {
 			}
 			if (!that.device) {
 				console.log('开始连接....');
-				that.device = iot.device(that.sdk_device);
-				console.log(that.sdk_device);
+				that.device = iot.device({
+					productKey: this.defaultApp.productKey,
+					deviceName: this.defaultApp.deviceName,
+					deviceSecret: this.defaultApp.deviceSecret
+				});
 			}
 			// 测试上报一条设备标签数据
 			this.device.on('connect', res => {
@@ -246,7 +246,7 @@ export default {
 					// console.log('----------------------------------');
 					// console.log('that.topic=>' + that.topic);
 					if (err == null) {
-						console.log('主题发布成功');
+						console.log('主题发布成功',data);
 					} else {
 						console.log('主题发布失败 => err: ' + err);
 					}
@@ -346,7 +346,8 @@ export default {
 				this.windNum = this.windNum % 4;
 				console.log(this.windNum);
 				let msg = {
-					wind: this.windNum
+					wind: this.windNum,
+					usedev: this.useDeviceList
 				};
 				this.publish(msg);
 				uni.setStorageSync('$windNum', this.windNum);
@@ -385,12 +386,14 @@ export default {
 			console.log('确认定时', this.isFixed);
 			let msg = {
 				timeFixed: this.isFixed,
-				timeOpen: this.timeNum
+				timeOpen: this.timeNum,
+				usedev: this.useDeviceList
 			};
 			if (!this.timeingModel) {
 				msg = {
 					timeFixed: this.isFixed,
-					timeClose: this.timeNum
+					timeClose: this.timeNum,
+					usedev: this.useDeviceList
 				};
 			}
 			uni.setStorageSync('$isFixed', this.isFixed);
@@ -450,7 +453,8 @@ export default {
 				this.isUpDw = !this.isUpDw;
 				console.log(this.isUpDw);
 				let msg = {
-					upDw: this.isUpDw
+					upDw: this.isUpDw,
+					usedev: this.useDeviceList
 				};
 				this.publish(msg);
 				uni.setStorageSync('$isUpDw', this.isUpDw);
@@ -463,7 +467,8 @@ export default {
 				this.isLeRi = !this.isLeRi;
 				console.log(this.isLeRi);
 				let msg = {
-					leRi: this.isLeRi
+					leRi: this.isLeRi,
+					usedev: this.useDeviceList
 				};
 				this.publish(msg);
 				uni.setStorageSync('$isLeRi', this.isLeRi);
@@ -478,7 +483,8 @@ export default {
 				console.log(this.isModelCold);
 				let msg = {
 					modelCold: this.isModelCold,
-					modelHot: this.isModelHot
+					modelHot: this.isModelHot,
+					usedev: this.useDeviceList
 				};
 				uni.setStorageSync('$isModelCold', this.isModelCold);
 				uni.setStorageSync('$isModelHot', this.isModelHot);
@@ -502,7 +508,8 @@ export default {
 				console.log(this.isModelHot);
 				let msg = {
 					modelCold: this.isModelCold,
-					modelHot: this.isModelHot
+					modelHot: this.isModelHot,
+					usedev: this.useDeviceList
 				};
 				this.publish(msg);
 				uni.setStorageSync('$isModelCold', this.isModelCold);
@@ -527,7 +534,8 @@ export default {
 				}
 				console.log(this.tempNum);
 				let msg = {
-					tempNum: this.tempNum
+					tempNum: this.tempNum,
+					usedev: this.useDeviceList
 				};
 				uni.setStorageSync('$tempNum', this.tempNum);
 				this.publish(msg);
@@ -543,7 +551,8 @@ export default {
 				}
 				console.log(this.tempNum);
 				let msg = {
-					tempNum: this.tempNum
+					tempNum: this.tempNum,
+					usedev: this.useDeviceList
 				};
 				uni.setStorageSync('$tempNum', this.tempNum);
 				this.publish(msg);
@@ -556,7 +565,8 @@ export default {
 			that.isSwitchBtn = !that.isSwitchBtn;
 			console.log('开关', that.isSwitchBtn);
 			let msg = {
-				switchBtn: that.isSwitchBtn
+				switchBtn: that.isSwitchBtn,
+				usedev: this.useDeviceList
 			};
 			uni.setStorageSync('$isSwitchBtn', that.isSwitchBtn);
 			that.publish(msg);
@@ -580,25 +590,10 @@ export default {
 				that.isSwitchBtn = true;
 				that.readNum();
 			}
-		},
-
-		index: function() {
-			uni.navigateTo({
-				url: '../index/index'
-			});
-		},
-		airlist: function() {
-			uni.navigateTo({
-				url: '../airlist/airlist'
-			});
 		}
 	},
 	//调用
-	mounted() {
-		this.$nextTick(function() {
-			// this.initChart();
-		});
-	},
+	mounted() {},
 	onHide() {
 		uni.setStorageSync('$isSwitchBtn', false);
 	}
@@ -606,37 +601,37 @@ export default {
 </script>
 
 <script module="echarts" lang="renderjs">
-	export default {
-		mounted() {
-			if (typeof window.echarts === 'function') {
-				this.initEcharts()
-			} else {
-				// 动态引入较大类库避免影响页面展示
-				const script = document.createElement('script')
-				// view 层的页面运行在 www 根目录，其相对路径相对于 www 计算
-				script.src = 'static/echarts.js'
-				script.onload = this.initEcharts.bind(this)
-				document.head.appendChild(script)
-			}
+export default {
+	mounted() {
+		if (typeof window.echarts === 'function') {
+			this.initEcharts()
+		} else {
+			// 动态引入较大类库避免影响页面展示
+			const script = document.createElement('script')
+			// view 层的页面运行在 www 根目录，其相对路径相对于 www 计算
+			script.src = 'static/echarts.js'
+			script.onload = this.initEcharts.bind(this)
+			document.head.appendChild(script)
+		}
+	},
+	methods: {
+		initEcharts() {
+			this.myChart = echarts.init(document.getElementById('chart'))
+			// 观测更新的数据在 view 层可以直接访问到
+			this.myChart.setOption(this.option)
 		},
-		methods: {
-			initEcharts() {
-				this.myChart = echarts.init(document.getElementById('chart'))
-				// 观测更新的数据在 view 层可以直接访问到
-				this.myChart.setOption(this.option)
-			},
-			updateEcharts(newValue, oldValue, ownerInstance, instance) {
-				// 监听 service 层数据变更
-				this.myChart.setOption(newValue)
-			},
-			onClick(event, ownerInstance) {
-				// 调用 service 层的方法
-				ownerInstance.callMethod('onViewClick', {
-					test: 'test'
-				})
-			}
+		updateEcharts(newValue, oldValue, ownerInstance, instance) {
+			// 监听 service 层数据变更
+			this.myChart.setOption(newValue)
+		},
+		onClick(event, ownerInstance) {
+			// 调用 service 层的方法
+			ownerInstance.callMethod('onViewClick', {
+				test: 'test'
+			})
 		}
 	}
+}
 </script>
 
 <style>

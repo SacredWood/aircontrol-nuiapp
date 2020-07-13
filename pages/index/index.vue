@@ -6,8 +6,8 @@
 				<view class="btn-set">
 					<button class="btn"></button>
 					<button class="btn"></button>
-					<button class="btn"></button>
 					<button class="btn identify" @click="identify()">智能识别</button>
+					<button class="btn select" @click="setDefault()">设为默认</button>
 				</view>
 			</label>
 			<label for="ProductKey">
@@ -29,18 +29,17 @@
 			</label>
 			<view class="btn-set">
 				<button class="btn save" @click="save()">保存</button>
-				<button class="btn clear" @click="clear()">清空</button>
-				<button class="btn select" @click="keylist()">选择</button>
-				<button class="btn control" @click="aircontrol()">空调遥控</button>
+				<button class="btn clear" @click="clearAll()">清空</button>
+				<button class="btn select" @click="goTo('keylist')">选择</button>
+				<button class="btn control" @click="goTo('aircontrol')">空调遥控</button>
 			</view>
 		</view>
-		<view class="footer">
-			<view class="tips">重复内容将自动剔除</view>
-		</view>
+		<view class="footer"><view class="tips">重复内容将自动剔除</view></view>
 	</view>
 </template>
 
 <script>
+import Utils from '../../common/js/utils.js';
 export default {
 	data() {
 		return {
@@ -55,15 +54,14 @@ export default {
 	methods: {
 		identify: function() {
 			try {
-				let txt = this.aliIotKey;
-				if (txt == '') {
+				if (this.aliIotKey == '') {
 					uni.showToast({
 						title: '参数不能为空',
 						icon: 'none'
 					});
 					return;
 				}
-				let key = JSON.parse(txt);
+				let key = JSON.parse(this.aliIotKey);
 				console.log(key);
 				if (key.hasOwnProperty('ProductKey')) {
 					this.productKey = key.ProductKey;
@@ -85,65 +83,61 @@ export default {
 				});
 			}
 		},
-
-		save: function() {
-			let that = this;
-			if (this.productKey == '' || this.deviceName == '' || this.deviceSecret == '' || this.topic == '') {
+		setDefault: function() {
+			if (this.aliIotKey != '') {
+				this.identify();
+			}
+			if (this.productKey=='' || this.deviceName=='' || this.deviceSecret=='' || this.topic=='') {
 				uni.showToast({
 					title: '参数不能为空',
 					icon: 'none'
 				});
 				return;
 			}
-			// uni.setStorageSync('$ProductKey', this.productKey);
-			// uni.setStorageSync('$DeviceName', this.deviceName);
-			// uni.setStorageSync('$DeviceSecret', this.deviceSecret);
-			// uni.setStorageSync('$Topic', this.topic);
+			console.log('save', '默认设置成功');
 			let item = {
-				ProductKey: this.productKey,
-				DeviceName: this.deviceName,
-				DeviceSecret: this.deviceSecret,
-				Topic: this.topic
+				productKey: this.productKey,
+				deviceName: this.deviceName,
+				deviceSecret: this.deviceSecret,
+				topic: this.topic
 			};
-			let arr = [];
-			arr = uni.getStorageSync('$DeviceList');
-			if (arr) {
-				this.deviceList = JSON.parse(arr);
-			}
-			this.deviceList.push(item)
-			this.deviceList = this.unique(this.deviceList)
-			console.log(this.deviceList);
-			uni.setStorageSync('$DeviceList', JSON.stringify(this.deviceList));
-			console.log('保存成功', uni.getStorageSync('$DeviceList'));
-			this.clear(false);
+			uni.setStorageSync('$defaultApp', JSON.stringify(item));
 			uni.showToast({
 				title: '保存成功',
 				icon: 'none'
 			});
 		},
-		unique(arr) {
-			//除去空值 重值
-			let list = []
-			let hashMap = {}
-			arr.forEach(obj => {
-				// console.log(!obj,obj)
-				if (obj && typeof obj == 'object') {
-					let key = `${obj.ProductKey}${obj.Topic}`
-					hashMap[key] = obj
-				}
-			});
-			// console.log(hashMap)
-			for(let val of Object.values(hashMap)){
-				list.push(val)
+
+		save: function() {
+			let that = this;
+			if (this.productKey=='' || this.deviceName=='' || this.deviceSecret=='' || this.topic=='') {
+				uni.showToast({
+					title: '参数不能为空',
+					icon: 'none'
+				});
+				return;
 			}
-			return list
+			let item = {
+				productKey: this.productKey,
+				deviceName: this.deviceName,
+				deviceSecret: this.deviceSecret,
+				topic: this.topic
+			};
+			this.deviceList = uni.getStorageSync('$DeviceList') || '[]'
+			this.deviceList = JSON.parse(this.deviceList)
+			this.deviceList.push(item);
+			this.deviceList = Utils.unique(this.deviceList, 'deviceName','topic')
+			console.log(this.deviceList);
+			uni.setStorageSync('$DeviceList', JSON.stringify(this.deviceList));
+			console.log('保存成功', uni.getStorageSync('$DeviceList'));
+			this.clearAll(false);
+			uni.showToast({
+				title: '保存成功',
+				icon: 'none'
+			});
 		},
 
-		clear: function(showToast = true) {
-			// uni.setStorageSync('$ProductKey', '');
-			// uni.setStorageSync('$DeviceName', '');
-			// uni.setStorageSync('$DeviceSecret', '');
-			// uni.setStorageSync('$Topic', '');
+		clearAll: function(showToast = true) {
 			this.aliIotKey = '';
 			this.productKey = '';
 			this.deviceName = '';
@@ -158,22 +152,8 @@ export default {
 			}
 		},
 
-		connection: function() {
-			uni.navigateTo({
-				url: '../connect/connect'
-			});
-		},
-
-		aircontrol: function() {
-			uni.navigateTo({
-				url: '../aircontrol/aircontrol'
-			});
-		},
-
-		keylist: function() {
-			uni.navigateTo({
-				url: '../keylist/keylist'
-			});
+		goTo: function(page = 'index') {
+			Utils.goTo(page)
 		}
 	}
 };

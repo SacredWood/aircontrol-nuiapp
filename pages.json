@@ -41,7 +41,16 @@
 		"path": "pages/airlist/airlist",
 		"style": {
 			"navigationBarTitleText": "空调列表",
-			"backgroundColor": "#f0f8fa"
+			"backgroundColor": "#f0f8fa",
+			"app-plus": {
+				"titleNView": {
+					"buttons": [{
+						"text": "\ue635",
+						"fontSrc": "/static/iconfont.ttf",
+						"fontSize": "22px"
+					}]
+				}
+			}
 		}
 	}],
 	"globalStyle": {
